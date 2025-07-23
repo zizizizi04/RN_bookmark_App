@@ -1,10 +1,32 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, Alert } from "react-native";
 import React, { useContext } from "react";
 import BookmarkContext from "../components/BookmarksPrvider";
-import { ListItem, Button, Icon } from "@rneui/themed";
+import { ListItem, Icon } from "@rneui/themed";
 
 const BookmarkListScreen = ({ route }) => {
-  const { bookmarks } = useContext(BookmarkContext);
+  const { bookmarks, removeBookmark } = useContext(BookmarkContext);
+
+  const handleRemoveBookmark = (id, reset) => {
+    Alert.alert(
+      "삭제 확인",
+      "정말 삭제하시겠습니까?",
+      [
+        {
+          text: "삭제",
+          onPress: () => {
+            removeBookmark(id);
+            reset();
+          },
+          style: "destructive",
+        },
+        { text: "취소", onPress: () => reset(), style: "cancel" },
+      ],
+      {
+        cancelable: true, // 경고창 상자 밖을 클릭하면 경고창 닫힘
+        onDismiss: () => reset(), // 경고창 상자 밖을 클릭한 경우 콜백 함수 실행
+      }
+    );
+  };
 
   return (
     <View style={styles.listContainer}>
@@ -25,7 +47,7 @@ const BookmarkListScreen = ({ route }) => {
               rightContent={(reset) => (
                 <Pressable
                   style={{ ...styles.pressableBtn, backgroundColor: "red" }}
-                  onPress={() => reset()}
+                  onPress={() => handleRemoveBookmark(bookmark.id, reset)}
                 >
                   <Icon name="delete" color="white" />
                   <Text style={styles.btnText}>삭제</Text>
