@@ -1,10 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
-import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
+import React from "react";
 import tabConfig from "./configs/tabConfig";
+import { BookmarksPrvider } from "./components/BookmarksPrvider";
 
 const Tab = createBottomTabNavigator();
 
@@ -37,18 +37,20 @@ export default function App() {
   });
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator screenOptions={screenOptions}>
-        {tabConfig.map((routeConfig) => (
-          <Tab.Screen
-            key={routeConfig.name}
-            name={routeConfig.name}
-            component={routeConfig.component}
-            options={{ title: routeConfig.title }}
-          />
-        ))}
-      </Tab.Navigator>
-    </NavigationContainer>
+    <BookmarksPrvider>
+      <NavigationContainer>
+        <Tab.Navigator screenOptions={screenOptions}>
+          {tabConfig.map((routeConfig) => (
+            <Tab.Screen
+              key={routeConfig.name}
+              name={routeConfig.name}
+              component={routeConfig.component}
+              options={{ title: routeConfig.title }}
+            />
+          ))}
+        </Tab.Navigator>
+      </NavigationContainer>
+    </BookmarksPrvider>
   );
 }
 

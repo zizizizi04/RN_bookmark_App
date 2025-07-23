@@ -6,55 +6,17 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import React, { useState, useRef } from "react";
-
-function dateToStr(d) {
-  const pad = (n) => {
-    return n < 10 ? "0" + n : n;
-  };
-
-  return (
-    d.getFullYear() +
-    "-" +
-    pad(d.getMonth() + 1) +
-    "-" +
-    pad(d.getDate()) +
-    " " +
-    pad(d.getHours()) +
-    ":" +
-    pad(d.getMinutes()) +
-    ":" +
-    pad(d.getSeconds())
-  );
-}
-
-const useBookmarkState = () => {
-  const [bookmarks, setBookmarks] = useState([]);
-  const lastBookmarkIdRef = useRef(0);
-
-  const addBookmark = (newContent) => {
-    const id = ++lastBookmarkIdRef.current;
-    const newBookmark = {
-      id,
-      content: newContent,
-      regDate: dateToStr(new Date()),
-    };
-
-    const newBookmarks = [...bookmarks, newBookmark];
-    setBookmarks(newBookmarks);
-  };
-
-  return { addBookmark };
-};
+import React, { useContext, useState } from "react";
+import BookmarkContext from "../components/BookmarksPrvider";
 
 const BookmarkWriteScreen = ({ navigation }) => {
   const [bookmark, setBookmark] = useState("");
 
-  const { addBookmark } = useBookmarkState();
+  const { addBookmark } = useContext(BookmarkContext);
 
   const handleAddBookmark = () => {
     if (!bookmark.trim()) {
-      Alert.alert("할 일을 입력해주세요.");
+      Alert.alert("내용을 입력해주세요.");
       return;
     }
 
