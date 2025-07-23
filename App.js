@@ -22,7 +22,11 @@ export default function App() {
 
       return <IconComponent name={iconName} size={size} color={color} />;
     },
-
+    headerTitleAlign: "center",
+    headerTitleStyle: {
+      fontSize: 23,
+      fontWeight: "bold",
+    },
     tabBarLabelStyle: {
       fontSize: 13,
       paddingBottom: 10,
