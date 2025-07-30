@@ -45,9 +45,16 @@ export const BookmarksPrvider = ({ children }) => {
     setBookmarks(newBookmark);
   };
 
+  const modifyBookmark = (id, newContent) => {
+    const newBookmarks = bookmarks.map((bookmark) =>
+      bookmark.id === id ? { ...bookmark, content: newContent } : bookmark
+    );
+    setBookmarks(newBookmarks);
+  };
+
   return (
     <BookmarkContext.Provider
-      value={{ bookmarks, addBookmark, removeBookmark }}
+      value={{ bookmarks, addBookmark, removeBookmark, modifyBookmark }}
     >
       {children}
     </BookmarkContext.Provider>
