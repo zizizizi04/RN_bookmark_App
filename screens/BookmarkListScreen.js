@@ -7,12 +7,100 @@ import {
   Modal,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import BookmarkContext from "../components/BookmarksPrvider";
 import { ListItem, Icon } from "@rneui/themed";
 
-const BookmarkListScreen = ({ route }) => {
+const BookmarkListItem = ({ bookmark, onModify, onRemove }) => {
+  return (
+    <View
+      style={{
+        marginVertical: 5, // margin Y축
+        marginHorizontal: 10, // margin X축
+        borderWidth: 2,
+        borderRadius: 10,
+        overflow: "hidden",
+      }}
+    >
+      <ListItem.Swipeable
+        bottomDivider
+        style={styles.listBox}
+        leftContent={(reset) => (
+          <Pressable
+            style={{ ...styles.pressableBtn, backgroundColor: "blue" }}
+            onPress={() => onModify(bookmark, reset)}
+          >
+            <Icon name="update" color="white" />
+            <Text style={styles.btnText}>수정</Text>
+          </Pressable>
+        )}
+        rightContent={(reset) => (
+          <Pressable
+            style={{ ...styles.pressableBtn, backgroundColor: "red" }}
+            onPress={() => onRemove(bookmark.id, reset)}
+          >
+            <Icon name="delete" color="white" />
+            <Text style={styles.btnText}>삭제</Text>
+          </Pressable>
+        )}
+      >
+        <ListItem.Content>
+          <ListItem.Title>번호: {bookmark.id}</ListItem.Title>
+          <ListItem.Subtitle>작성날짜: {bookmark.regDate}</ListItem.Subtitle>
+          <ListItem.Subtitle>내용: {bookmark.content}</ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem.Swipeable>
+    </View>
+  );
+};
+
+const BookmarkModifyModal = ({
+  modalVisible,
+  setModalVisible,
+  modifiedContent,
+  setModifiedContent,
+  onModify,
+  closeModal,
+}) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}
+    >
+      <Pressable onPress={closeModal} style={styles.modalContainer}>
+        <Pressable style={styles.modalBox}>
+          <View style={styles.modalInner}>
+            <View style={{ flexGrow: 1 }}>
+              <TextInput
+                multiline
+                style={styles.modifyInput}
+                placeholder="수정할 내용을 입력해주세요."
+                value={modifiedContent}
+                onChangeText={setModifiedContent}
+              />
+            </View>
+            <View style={styles.modalBtnBox}>
+              <TouchableOpacity onPress={onModify}>
+                <Text style={styles.modalBtnText}>수정</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={closeModal}>
+                <Text style={styles.modalBtnText}>취소</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+};
+
+const BookmarkListScreen = () => {
   const { bookmarks, removeBookmark, modifyBookmark } =
     useContext(BookmarkContext);
   const [modalVisible, setModalVisible] = useState(false);
@@ -65,86 +153,30 @@ const BookmarkListScreen = ({ route }) => {
   return (
     <View style={styles.listContainer}>
       {bookmarks.length > 0 ? (
-        bookmarks.map((bookmark) => (
-          <View
-            key={bookmark.id}
-            style={{
-              marginVertical: 5, // margin Y축
-              marginHorizontal: 10, // margin X축
-              borderWidth: 2,
-              borderRadius: 10,
-              overflow: "hidden",
-            }}
-          >
-            <ListItem.Swipeable
-              bottomDivider
-              style={styles.listBox}
-              leftContent={(reset) => (
-                <Pressable
-                  style={{ ...styles.pressableBtn, backgroundColor: "blue" }}
-                  onPress={() => openModifyModal(bookmark, reset)}
-                >
-                  <Icon name="update" color="white" />
-                  <Text style={styles.btnText}>수정</Text>
-                </Pressable>
-              )}
-              rightContent={(reset) => (
-                <Pressable
-                  style={{ ...styles.pressableBtn, backgroundColor: "red" }}
-                  onPress={() => handleRemoveBookmark(bookmark.id, reset)}
-                >
-                  <Icon name="delete" color="white" />
-                  <Text style={styles.btnText}>삭제</Text>
-                </Pressable>
-              )}
-            >
-              <ListItem.Content>
-                <ListItem.Title>번호: {bookmark.id}</ListItem.Title>
-                <ListItem.Subtitle>
-                  작성날짜: {bookmark.regDate}
-                </ListItem.Subtitle>
-                <ListItem.Subtitle>내용: {bookmark.content}</ListItem.Subtitle>
-              </ListItem.Content>
-            </ListItem.Swipeable>
-          </View>
-        ))
+        <FlatList
+          data={bookmarks}
+          renderItem={({ item }) => (
+            <BookmarkListItem
+              bookmark={item}
+              onModify={openModifyModal}
+              onRemove={handleRemoveBookmark}
+            />
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        />
       ) : (
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>
           작성된 북마크가 없습니다.
         </Text>
       )}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <Pressable onPress={closeModal} style={styles.modalContainer}>
-          <Pressable style={styles.modalBox}>
-            <View style={styles.modalInner}>
-              <View style={{ flexGrow: 1 }}>
-                <TextInput
-                  multiline
-                  style={styles.modifyInput}
-                  placeholder="수정할 내용을 입력해주세요."
-                  value={modifiedContent}
-                  onChangeText={setModifiedContent}
-                />
-              </View>
-              <View style={styles.modalBtnBox}>
-                <TouchableOpacity onPress={handlModifyModal}>
-                  <Text style={styles.modalBtnText}>수정</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={closeModal}>
-                  <Text style={styles.modalBtnText}>취소</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      <BookmarkModifyModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        modifiedContent={modifiedContent}
+        setModifiedContent={setModifiedContent}
+        onModify={handlModifyModal}
+        closeModal={closeModal}
+      />
     </View>
   );
 };
