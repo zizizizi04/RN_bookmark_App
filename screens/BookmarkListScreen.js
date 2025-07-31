@@ -14,6 +14,12 @@ import BookmarkContext from "../components/BookmarksPrvider";
 import { ListItem, Icon } from "@rneui/themed";
 
 const BookmarkListItem = ({ bookmark, onModify, onRemove }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <View
       style={{
@@ -48,8 +54,12 @@ const BookmarkListItem = ({ bookmark, onModify, onRemove }) => {
       >
         <ListItem.Content>
           <ListItem.Title>번호: {bookmark.id}</ListItem.Title>
-          <ListItem.Subtitle>작성날짜: {bookmark.regDate}</ListItem.Subtitle>
-          <ListItem.Subtitle>내용: {bookmark.content}</ListItem.Subtitle>
+          <Text>작성날짜: {bookmark.regDate}</Text>
+          <Pressable onPress={toggleExpand} style={styles.contentBox}>
+            <Text numberOfLines={isExpanded ? null : 2} ellipsizeMode="tail">
+              내용: {bookmark.content}
+            </Text>
+          </Pressable>
         </ListItem.Content>
       </ListItem.Swipeable>
     </View>
