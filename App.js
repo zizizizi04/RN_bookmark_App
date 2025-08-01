@@ -1,12 +1,23 @@
 import { StyleSheet, Text, StatusBar, View, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import tabConfig from "./configs/tabConfig";
 import { BookmarksPrvider } from "./components/BookmarksPrvider";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
 
 const { width, height } = Dimensions.get("window");
+
+// 스플래시 스크린이 자동으로 숨겨지지 않도록 설정
+SplashScreen.preventAutoHideAsync();
+
+const fetchFonts = () => {
+  return Font.loadAsync({
+    "pretendard-font": require("./assets/fonts/Pretendard-Medium.ttf"),
+  });
+};
 
 const CustomHeader = ({ title }) => {
   return (
@@ -24,6 +35,27 @@ const CustomHeader = ({ title }) => {
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      try {
+        await fetchFonts();
+      } catch (e) {
+        console.warn(e); // 폰트 로드 중 오류 발생 시 경고
+      } finally {
+        setFontsLoaded(true);
+        SplashScreen.hideAsync(); // 폰트 로드가 완료되면 스플래시 스크린을 숨겨 줌
+      }
+    };
+
+    loadFonts();
+  }, []);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   const screenOptions = ({ route }) => ({
     tabBarIcon: ({ focused, color, size }) => {
       const routeConfig = tabConfig.find(
@@ -44,8 +76,8 @@ export default function App() {
     },
     tabBarLabelStyle: {
       fontSize: 13,
-      paddingBottom: 10,
       fontWeight: "bold",
+      fontFamily: "pretendard-font",
     },
     tabBarStyle: {
       height: "8%",
