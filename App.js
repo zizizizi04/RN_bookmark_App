@@ -32,6 +32,9 @@ export default function App() {
       paddingBottom: 10,
       fontWeight: "bold",
     },
+    tabBarStyle: {
+      height: "8%",
+    },
     tabBarInactiveTintColor: "#0162d1",
     tabBarActiveTintColor: "black",
   });

@@ -8,10 +8,14 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Dimensions,
+  ScrollView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import BookmarkContext from "../components/BookmarksPrvider";
 import { ListItem, Icon } from "@rneui/themed";
+
+const { width, height } = Dimensions.get("window");
 
 const BookmarkListItem = ({ bookmark, onModify, onRemove }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -85,24 +89,23 @@ const BookmarkModifyModal = ({
     >
       <Pressable onPress={closeModal} style={styles.modalContainer}>
         <Pressable style={styles.modalBox}>
-          <View style={styles.modalInner}>
-            <View style={{ flexGrow: 1 }}>
-              <TextInput
-                multiline
-                style={styles.modifyInput}
-                placeholder="수정할 내용을 입력해주세요."
-                value={modifiedContent}
-                onChangeText={setModifiedContent}
-              />
-            </View>
-            <View style={styles.modalBtnBox}>
-              <TouchableOpacity onPress={onModify}>
-                <Text style={styles.modalBtnText}>수정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Text style={styles.modalBtnText}>취소</Text>
-              </TouchableOpacity>
-            </View>
+          <ScrollView style={styles.modalInner}>
+            <TextInput
+              multiline
+              maxLength={100}
+              style={styles.modifyInput}
+              placeholder="수정할 내용을 입력해주세요."
+              value={modifiedContent}
+              onChangeText={setModifiedContent}
+            />
+          </ScrollView>
+          <View style={styles.modalBtnBox}>
+            <TouchableOpacity onPress={onModify}>
+              <Text style={styles.modalBtnText}>수정</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={closeModal}>
+              <Text style={styles.modalBtnText}>취소</Text>
+            </TouchableOpacity>
           </View>
         </Pressable>
       </Pressable>
@@ -212,26 +215,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  modalInner: {
-    flex: 1,
-  },
   modalBox: {
-    width: "80%",
-    minHeight: 250,
+    flex: 0.4,
+    width: width * 0.8,
+    backgroundColor: "#fff",
     borderWidth: 3,
     borderRadius: 10,
-    backgroundColor: "#fff",
   },
   modifyInput: {
     padding: 10,
     fontSize: 20,
   },
   modalBtnBox: {
-    height: 60,
+    paddingVertical: 20,
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: 10,
+    gap: 20,
     paddingRight: 20,
   },
   modalBtnText: {
