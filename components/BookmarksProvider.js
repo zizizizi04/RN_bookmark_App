@@ -3,7 +3,7 @@ import testData from "./TestData";
 
 const BookmarkContext = createContext();
 
-export const BookmarksPrvider = ({ children }) => {
+export const BookmarksProvider = ({ children }) => {
   // const [bookmarks, setBookmarks] = useState([]);
   // const lastBookmarkIdRef = useRef(0);
 

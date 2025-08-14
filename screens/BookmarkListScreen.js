@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import BookmarkContext from "../components/BookmarksPrvider";
+import BookmarkContext from "../components/BookmarksProvider";
 import { ListItem, Icon } from "@rneui/themed";
 
 const { width, height } = Dimensions.get("window");

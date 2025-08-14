@@ -1,23 +1,15 @@
 import { StyleSheet, Text, StatusBar, View, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import tabConfig from "./configs/tabConfig";
-import { BookmarksPrvider } from "./components/BookmarksPrvider";
+import { BookmarksProvider } from "./components/BookmarksProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as SplashScreen from "expo-splash-screen";
-import * as Font from "expo-font";
+import AppLoadingContext, {
+  AppLoadingProvider,
+} from "./components/AppLoadingProvider";
 
 const { width, height } = Dimensions.get("window");
-
-// 스플래시 스크린이 자동으로 숨겨지지 않도록 설정
-SplashScreen.preventAutoHideAsync();
-
-const fetchFonts = () => {
-  return Font.loadAsync({
-    "pretendard-font": require("./assets/fonts/Pretendard-Medium.ttf"),
-  });
-};
 
 const CustomHeader = ({ title }) => {
   return (
@@ -34,23 +26,8 @@ const CustomHeader = ({ title }) => {
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-
-  useEffect(() => {
-    const loadFonts = async () => {
-      try {
-        await fetchFonts();
-      } catch (e) {
-        console.warn(e); // 폰트 로드 중 오류 발생 시 경고
-      } finally {
-        setFontsLoaded(true);
-        SplashScreen.hideAsync(); // 폰트 로드가 완료되면 스플래시 스크린을 숨겨 줌
-      }
-    };
-
-    loadFonts();
-  }, []);
+const AppWithNavigation = () => {
+  const { fontsLoaded } = useContext(AppLoadingContext);
 
   if (!fontsLoaded) {
     return null;
@@ -76,6 +53,7 @@ export default function App() {
     },
     tabBarLabelStyle: {
       fontSize: 13,
+      paddingBottom: 10,
       fontWeight: "bold",
       fontFamily: "pretendard-font",
     },
@@ -87,23 +65,31 @@ export default function App() {
   });
 
   return (
-    <BookmarksPrvider>
-      <NavigationContainer>
-        <Tab.Navigator screenOptions={screenOptions}>
-          {tabConfig.map((routeConfig) => (
-            <Tab.Screen
-              key={routeConfig.name}
-              name={routeConfig.name}
-              component={routeConfig.component}
-              options={{
-                title: routeConfig.title,
-                header: () => <CustomHeader title={routeConfig.title} />,
-              }}
-            />
-          ))}
-        </Tab.Navigator>
-      </NavigationContainer>
-    </BookmarksPrvider>
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={screenOptions}>
+        {tabConfig.map((routeConfig) => (
+          <Tab.Screen
+            key={routeConfig.name}
+            name={routeConfig.name}
+            component={routeConfig.component}
+            options={{
+              title: routeConfig.title,
+              header: () => <CustomHeader title={routeConfig.title} />,
+            }}
+          />
+        ))}
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default function App() {
+  return (
+    <AppLoadingProvider>
+      <BookmarksProvider>
+        <AppWithNavigation />
+      </BookmarksProvider>
+    </AppLoadingProvider>
   );
 }
 

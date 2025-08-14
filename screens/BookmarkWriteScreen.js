@@ -7,7 +7,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import BookmarkContext from "../components/BookmarksPrvider";
+import BookmarkContext from "../components/BookmarksProvider";
 
 const BookmarkWriteScreen = ({ navigation }) => {
   const [bookmark, setBookmark] = useState("");
