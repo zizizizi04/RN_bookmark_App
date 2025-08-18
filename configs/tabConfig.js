@@ -11,7 +11,7 @@ const tabConfig = [
     title: "메인 홈",
     component: HomeScreen,
     focusedIcon: "home-variant",
-    unfocusedIcon: "home-variant-outline",
+    unfocusedIcon: "home-outline",
     iconComponent: MaterialCommunityIcons,
   },
   {

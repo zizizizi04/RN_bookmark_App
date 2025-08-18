@@ -60,7 +60,7 @@ const AppWithNavigation = () => {
     tabBarStyle: {
       height: "8%",
     },
-    tabBarInactiveTintColor: "#0162d1",
+    tabBarInactiveTintColor: "gray",
     tabBarActiveTintColor: "black",
   });
 

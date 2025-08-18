@@ -5,14 +5,19 @@ import {
   TextInput,
   Pressable,
   Alert,
+  Dimensions,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import BookmarkContext from "../components/BookmarksProvider";
+import AppLoadingContext from "../components/AppLoadingProvider";
+
+const { width, height } = Dimensions.get("window");
 
 const BookmarkWriteScreen = ({ navigation }) => {
   const [bookmark, setBookmark] = useState("");
 
   const { addBookmark } = useContext(BookmarkContext);
+  const { fontsLoaded } = useContext(AppLoadingContext);
 
   const handleAddBookmark = () => {
     if (!bookmark.trim()) {
@@ -27,13 +32,15 @@ const BookmarkWriteScreen = ({ navigation }) => {
 
   return (
     <>
-      <TextInput
-        multiline
-        onChangeText={setBookmark}
-        value={bookmark}
-        placeholder="북마크를 추가해 주세요."
-        style={styles.inputBox}
-      />
+      <View style={styles.inputBox}>
+        <TextInput
+          multiline
+          onChangeText={setBookmark}
+          value={bookmark}
+          placeholder="북마크를 추가해 주세요."
+          style={styles.textInput}
+        />
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -61,14 +68,17 @@ const BookmarkWriteScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   inputBox: {
-    minHeight: 200,
+    minHeight: height * 0.25,
     padding: 10,
     backgroundColor: "#fff",
     borderRadius: 10,
     borderWidth: 2,
     margin: 10,
+  },
+  textInput: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "pretendard-font",
+    //fontWeight: "bold",
   },
   pressableBtn: {
     padding: 10,
@@ -82,6 +92,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: "bold",
+    fontFamily: "pretendard-font",
   },
 });
 
